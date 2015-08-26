@@ -5,10 +5,19 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:Gemeenschap="clr-namespace:Gemeenschap;assembly=Gemeenschap"
     xmlns:glob="clr-namespace:System.Globalization;assembly=mscorlib"
+    xmlns:local="clr-namespace:Videotheek"
     mc:Ignorable="d" x:Class="Videotheek.MainWindow"
         Title="Videotheek" Height="450" Width="525" Loaded="Window_Loaded">
     <Window.Resources>
         <CollectionViewSource x:Key="filmViewSource" d:DesignSource="{d:DesignInstance {x:Type Gemeenschap:Film}, CreateList=True}"/>
+        <Style x:Key="textBoxInError" TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip"  Value="{Binding RelativeSource={x:Static RelativeSource.Self}, 
+                        Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <StackPanel Orientation="Horizontal">
         <StackPanel DataContext="{StaticResource filmViewSource}"  Width="349" Margin="0,0,0,10" >
@@ -39,13 +48,21 @@
                 <Label Content="Titel:" Grid.Column="0" HorizontalAlignment="Left" Margin="0,2,0,1" Grid.Row="1" VerticalAlignment="Center"/>
                 <TextBox x:Name="titelTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3,3,-55,3" Text="{Binding Titel, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="180" RenderTransformOrigin="0.073,0.726" Grid.Row="1" IsReadOnly="True"/>
                 <Label Content="Totaal Verhuurd:" Grid.Column="0" HorizontalAlignment="Left" Margin="-14,60,0,-54" Grid.Row="6" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
-                <TextBox x:Name="totaalVerhuurdTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3,63,-50,-54" Grid.Row="6" Text="{Binding TotaalVerhuurd, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="180" IsReadOnly="True"/>
+                <TextBox x:Name="totaalVerhuurdTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3,63,-50,-54" Grid.Row="6" Style="{StaticResource textBoxInError}" VerticalAlignment="Center" Width="180" IsReadOnly="True">
+                    <TextBox.Text>
+                        <Binding Path="TotaalVerhuurd" Mode="TwoWay" NotifyOnValidationError="True" ValidatesOnExceptions="True" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <local:GetalIngaveOk/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
                 <Label Content="Uit Voorraad:" Grid.Column="0" HorizontalAlignment="Left" Margin="0,1,0,5" Grid.Row="6" VerticalAlignment="Center"/>
                 <TextBox x:Name="uitVoorraadTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="22" Margin="3,5,-52,5" Grid.Row="6" Text="{Binding UitVoorraad, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="180" IsReadOnly="True"/>
             </Grid>
         </StackPanel>
         <StackPanel Width="165" Margin="0,0,0,10">
-            <Button x:Name="btToevoegbevestig" Width="100" Height="40" Margin="0,30" Content="Toevoegen"/>
+            <Button x:Name="btToevoegbevestig" Width="100" Height="40" Margin="0,30" Content="Toevoegen" Click="btToevoegbevestig_Click"/>
             <Button x:Name="btVerwijdAnnuleer" Width="100" Height="40" Margin="0,-20" Content="Verwijderen"/>
             <Button x:Name="btAllesOpslaan" Width="100" Height="40" Margin="0,40" Content="Alles opslaan"/>
             <Button x:Name="btVerhuur" Width="100" Height="40" Margin="0,40" Content="Verhuur"/>

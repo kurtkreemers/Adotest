@@ -33,5 +33,27 @@ namespace Videotheek
             genreNrCbBox.ItemsSource = manager.GetGenre();
             
         }
+
+        private void btToevoegbevestig_Click(object sender, RoutedEventArgs e)
+        {
+            layoutInstel(); 
+        }
+
+        private void layoutInstel ()
+        {
+            //lbFilms.SelectedItem = null;
+            btToevoegbevestig.Content = "Bevestigen";
+            btVerwijdAnnuleer.Content = "Annuleren";
+            btAllesOpslaan.IsEnabled = false;
+            btVerhuur.IsEnabled = false;
+            lbFilms.IsEnabled = false;
+            titelTextBox.IsReadOnly = false;
+            genreNrCbBox.IsEnabled = true;
+            inVoorraadTextBox.IsReadOnly = false;
+            uitVoorraadTextBox.IsReadOnly = false;
+            prijsTextBox.IsReadOnly = false;
+            totaalVerhuurdTextBox.IsReadOnly = false;
+        }
            }
+
 }
