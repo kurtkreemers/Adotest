@@ -29,8 +29,7 @@ namespace Videotheek
             var manager = new Videomanager();
             filmViewSource.Source = manager.GetFilms();
             genreNrCbBox.DisplayMemberPath = "GenreName";
-            genreNrCbBox.SelectedValuePath = "GenreNr";
-           
+            genreNrCbBox.SelectedValuePath = "GenreNr";           
             genreNrCbBox.ItemsSource = manager.GetGenre();
             
         }
