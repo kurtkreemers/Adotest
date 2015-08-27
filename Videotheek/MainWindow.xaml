@@ -12,7 +12,7 @@
         <CollectionViewSource x:Key="filmViewSource" d:DesignSource="{d:DesignInstance {x:Type Gemeenschap:Film}, CreateList=True}"/>
     </Window.Resources>
     <StackPanel Orientation="Horizontal">
-        <StackPanel DataContext="{StaticResource filmViewSource}"  Width="321" Margin="0,0,0,10" >
+        <StackPanel DataContext="{StaticResource filmViewSource}"  Width="335" Margin="0,0,0,10" >
             <Label FontSize="20" Width="175" Content="Videotheek - films"/>
             <ListBox x:Name="lbFilms" Height="125" ItemsSource="{Binding}" DisplayMemberPath="Titel"/>
             <Grid  x:Name="grid1" HorizontalAlignment="Left" Margin="54,0,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.326,0.485" Width="267">
@@ -34,7 +34,7 @@
                 <Label Content="Genre Nr:" Grid.Column="0" HorizontalAlignment="Left" Margin="0,1,0,2" Grid.Row="3" VerticalAlignment="Center"/>
                 <ComboBox x:Name="genreNrCbBox" Grid.Column="1" HorizontalAlignment="Left" Height="24" Margin="3.2,1.2,-48.8,3.6" Grid.Row="3" VerticalAlignment="Center" Width="180" IsEnabled="False" >
                     <ComboBox.Text>
-                        <Binding Path="GenreNr" Mode="OneWay" NotifyOnValidationError="True" ValidatesOnExceptions="True" UpdateSourceTrigger="LostFocus"  >
+                        <Binding Path="GenreNr" Mode="OneWayToSource"  NotifyOnValidationError="True" ValidatesOnExceptions="True" UpdateSourceTrigger="LostFocus"  >
                             <Binding.ValidationRules>
                                 <local:GenreSelectRule/>
                             </Binding.ValidationRules>                           
@@ -48,7 +48,7 @@
                 <Label Content="In Voorraad:" Grid.Column="0" HorizontalAlignment="Left" Margin="0,1,0,2" Grid.Row="5" VerticalAlignment="Center"/>
                 <TextBox x:Name="inVoorraadTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3,3,-53,3" Grid.Row="5" VerticalAlignment="Center" Width="180" IsReadOnly="True">
                     <TextBox.Text>
-                        <Binding Path="InVoorraad" Mode="TwoWay" NotifyOnValidationError="True" ValidatesOnExceptions="True" UpdateSourceTrigger="LostFocus" >
+                        <Binding Path="InVoorraad" Mode="OneWayToSource"  NotifyOnValidationError="True" ValidatesOnExceptions="True" UpdateSourceTrigger="PropertyChanged" >
                             <Binding.ValidationRules>
                                 <local:IntGetalIngaveRule/>
                                 <local:GetalGroterDanNulRule/>
@@ -59,7 +59,7 @@
                 <Label Content="Prijs:" Grid.Column="0" HorizontalAlignment="Left" Margin="0,34,0,-28" Grid.Row="6" VerticalAlignment="Center" RenderTransformOrigin="1.124,6.121"/>
                 <TextBox x:Name="prijsTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3,33,-51,-23" Grid.Row="6" VerticalAlignment="Center" Width="180" IsReadOnly="True">
                     <TextBox.Text>
-                        <Binding Path="Prijs" Mode="TwoWay" NotifyOnValidationError="True" ValidatesOnExceptions="True" UpdateSourceTrigger="LostFocus"  ConverterCulture="{x:Static glob:CultureInfo.CurrentCulture}" StringFormat="c">
+                        <Binding Path="Prijs" Mode="OneWayToSource"  NotifyOnValidationError="True" ValidatesOnExceptions="True" UpdateSourceTrigger="LostFocus"  ConverterCulture="{x:Static glob:CultureInfo.CurrentCulture}" StringFormat="c">
                             <Binding.ValidationRules>
                                 <local:DecimalIngaveRule ValidationStep="CommittedValue"/>
                                 <local:GetalGroterDanNulRule/>
@@ -70,7 +70,7 @@
                 <Label Content="Titel:" Grid.Column="0" HorizontalAlignment="Left" Margin="0,2,0,1" Grid.Row="1" VerticalAlignment="Center"/>
                 <TextBox x:Name="titelTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3,3,-55,3" VerticalAlignment="Center" Width="180" RenderTransformOrigin="0.073,0.726" Grid.Row="1" IsReadOnly="True">
                     <TextBox.Text>
-                        <Binding Path="Titel" Mode="TwoWay" NotifyOnValidationError="True" ValidatesOnExceptions="True" UpdateSourceTrigger="PropertyChanged">
+                        <Binding Path="Titel" Mode="OneWayToSource"  NotifyOnValidationError="True" ValidatesOnExceptions="True" UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>
                                 <local:StringIngaveRule/>
                             </Binding.ValidationRules>
@@ -80,7 +80,7 @@
                 <Label Content="Totaal Verhuurd:" Grid.Column="0" HorizontalAlignment="Left" Margin="-14,61,0,-54" Grid.Row="6" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
                 <TextBox x:Name="totaalVerhuurdTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3,63,-50,-54" Grid.Row="6" VerticalAlignment="Center" Width="180" IsReadOnly="True">
                     <TextBox.Text>
-                        <Binding Path="TotaalVerhuurd" Mode="TwoWay" NotifyOnValidationError="True" ValidatesOnExceptions="True" UpdateSourceTrigger="PropertyChanged">
+                        <Binding Path="TotaalVerhuurd" Mode="OneWayToSource"  NotifyOnValidationError="True" ValidatesOnExceptions="True" UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>
                                 <local:IntGetalIngaveRule/>
                             </Binding.ValidationRules>
@@ -90,7 +90,7 @@
                 <Label Content="Uit Voorraad:" Grid.Column="0" HorizontalAlignment="Left" Margin="0,1,0,5" Grid.Row="6" VerticalAlignment="Center"/>
                 <TextBox x:Name="uitVoorraadTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="22" Margin="3,5,-52,5" Grid.Row="6" VerticalAlignment="Center" Width="180" IsReadOnly="True">
                     <TextBox.Text>
-                        <Binding Path="UitVoorraad" Mode="TwoWay" NotifyOnValidationError="True" ValidatesOnExceptions="True" UpdateSourceTrigger="PropertyChanged">
+                        <Binding Path="UitVoorraad" Mode="OneWayToSource"  NotifyOnValidationError="True" ValidatesOnExceptions="True" UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>
                                 <local:IntGetalIngaveRule/>
                             </Binding.ValidationRules>

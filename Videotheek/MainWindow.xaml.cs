@@ -104,7 +104,7 @@ namespace Videotheek
             uitVoorraadTextBox.IsReadOnly = false;
             prijsTextBox.IsReadOnly = false;
             totaalVerhuurdTextBox.IsReadOnly = false;
-            lbFilms.SelectedIndex = -1;
+            lbFilms.SelectedIndex = 1;         
             VullenBoxen();
         }
         private void VullenBoxen()
