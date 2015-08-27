@@ -15,6 +15,7 @@ namespace Gemeenschap
         private int uitvoorraadValue;
         private Decimal prijsValue;
         private int TotaalverhVallue;
+        public bool Changed { get; set; }
 
         public int BandNr
         {
@@ -24,35 +25,55 @@ namespace Gemeenschap
         public String Titel
         {
             get { return titelValue; }
-            set { titelValue = value; }
+            set
+            {
+                titelValue = value;
+
+            }
         }
         public int GenreNr
         {
             get { return genrenrValue; }
-            set { genrenrValue = value; }
-        }       
+            set
+            {
+                genrenrValue = value;
+
+            }
+        }
         public int InVoorraad
         {
             get { return invoorraadValue; }
-            set { invoorraadValue = value; }
+            set
+            {
+                invoorraadValue = value;
+                Changed = true;
+            }
         }
         public int UitVoorraad
         {
             get { return uitvoorraadValue; }
-            set { uitvoorraadValue = value; }
+            set
+            {
+                uitvoorraadValue = value;
+                Changed = true;
+            }
         }
         public Decimal Prijs
         {
             get { return prijsValue; }
             set { prijsValue = value; }
-        }        
+        }
         public int TotaalVerhuurd
         {
             get { return TotaalverhVallue; }
-            set { TotaalverhVallue = value; }
+            set
+            {
+                TotaalverhVallue = value;
+                Changed = true;
+            }
         }
 
-        public Film(Int32 bandnr, String titel, Int32 genrenr, Int32 invoorraad,Int32 uitvoorraad,
+        public Film(Int32 bandnr, String titel, Int32 genrenr, Int32 invoorraad, Int32 uitvoorraad,
             Decimal prijs, Int32 totaalverhuurd)
         {
             this.BandNr = bandnr;
@@ -62,17 +83,18 @@ namespace Gemeenschap
             this.UitVoorraad = uitvoorraad;
             this.Prijs = prijs;
             this.TotaalVerhuurd = totaalverhuurd;
+            this.Changed = false;
         }
         public Film()
         {
 
         }
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
     }
 }

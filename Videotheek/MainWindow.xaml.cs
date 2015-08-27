@@ -26,6 +26,7 @@ namespace Videotheek
         public ObservableCollection<Film> filmsOb = new ObservableCollection<Film>();
         public List<Film> OudeFilms = new List<Film>();
         public List<Film> NieuweFilms = new List<Film>();
+        public List<Film> GewijzigdeFilms = new List<Film>();
         public MainWindow()
         {
             InitializeComponent();
@@ -45,8 +46,7 @@ namespace Videotheek
                 genreNrCbBox.Items.Add(genre);
             }
             toevoegAct = false;
-
-
+            
         }
 
         private void btToevoegbevestig_Click(object sender, RoutedEventArgs e)
@@ -139,7 +139,7 @@ namespace Videotheek
         {
             if (toevoegAct)
             {
-                layoutChange();
+                layoutOriginal();
                 toevoegAct = false;
             }
             else
@@ -153,7 +153,7 @@ namespace Videotheek
             }
         }
 
-        private void layoutChange()
+        private void layoutOriginal()
         {
             btToevoegbevestig.Content = "Toevoegen";
             btVerwijdAnnuleer.Content = "Verwijderen";
@@ -171,5 +171,66 @@ namespace Videotheek
             totaalVerhuurdTextBox.IsReadOnly = true;
             lbFilms.SelectedIndex = 0;
         }
+
+        private void btVerhuur_Click(object sender, RoutedEventArgs e)
+        {
+            int inVoorraad = Convert.ToInt32(inVoorraadTextBox.Text);
+            int uitVoorraad = Convert.ToInt32(uitVoorraadTextBox.Text);
+            int totaalVerh = Convert.ToInt32(totaalVerhuurdTextBox.Text); 
+            if (inVoorraad > 0)
+            {
+                inVoorraadTextBox.Text = (inVoorraad - 1).ToString();
+                uitVoorraadTextBox.Text = (uitVoorraad + 1).ToString();
+                totaalVerhuurdTextBox.Text = (totaalVerh + 1).ToString();
+            }
+            else
+                MessageBox.Show("Alle films zijn verhuurd!!!", "Verhuur", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+        }
+
+        private void btAllesOpslaan_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (Film eenFilm in filmsOb)
+            {
+                if (eenFilm.Changed == true)
+                {
+                    GewijzigdeFilms.Add(eenFilm);
+                    eenFilm.Changed = false;
+                }
+            }
+            if (GewijzigdeFilms.Count() != 0 || OudeFilms.Count() != 0 || NieuweFilms.Count() != 0)
+            {
+                Videomanager manager = new Videomanager();
+                if (MessageBox.Show("Wilt u alles wegschrijven naar de database ?", "Opslaan", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
+                {
+                    
+                    if (GewijzigdeFilms.Count() != 0)
+                    {
+                        //manager.SchrijfWijzigingen(GewijzigdeFilms);
+                    }
+                    
+                    GewijzigdeFilms.Clear();
+                    
+                    if(NieuweFilms.Count() != 0)
+                    {
+                        //manager.ScrijfToevoegingen(NieuweFilms);
+                    }
+                    
+                    NieuweFilms.Clear();
+
+                    if(OudeFilms.Count() != 0)
+                    {
+                        //manager.SchrijfVerwijderingen(OudeFilms);
+                    }
+
+                    OudeFilms.Clear();
+                }
+            }
+            else
+                MessageBox.Show("Geen wijzigingen om op te slaan!!!", "Opslaan", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        
+
+        
     }
 }
