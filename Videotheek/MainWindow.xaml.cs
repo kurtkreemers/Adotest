@@ -13,39 +13,90 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Gemeenschap;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
 namespace Videotheek
 {
-   
+
     public partial class MainWindow : Window
     {
+        bool toevoegAct;
+        private CollectionViewSource filmViewSource;
+        public ObservableCollection<Film> filmsOb = new ObservableCollection<Film>();
+        public List<Film> OudeFilms = new List<Film>();
+        public List<Film> NieuweFilms = new List<Film>();
         public MainWindow()
         {
             InitializeComponent();
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            CollectionViewSource filmViewSource = ((CollectionViewSource)(this.FindResource("filmViewSource")));
+            filmViewSource = ((CollectionViewSource)(this.FindResource("filmViewSource")));
             var manager = new Videomanager();
-            filmViewSource.Source = manager.GetFilms();
+            filmsOb = manager.GetFilms();
+            filmViewSource.Source = filmsOb;
+            filmsOb.CollectionChanged += this.OnCollectionChanged;
             genreNrCbBox.DisplayMemberPath = "GenreName";
-            genreNrCbBox.SelectedValuePath = "GenreNr";           
-            genreNrCbBox.ItemsSource = manager.GetGenre();
-            
+            genreNrCbBox.SelectedValuePath = "GenreNr";
+            List<Genre> genresList = manager.GetGenre();
+            foreach (Genre genre in genresList)
+            {
+                genreNrCbBox.Items.Add(genre);
+            }
+            toevoegAct = false;
+
+
         }
 
         private void btToevoegbevestig_Click(object sender, RoutedEventArgs e)
         {
-            layoutInstel(); 
+            if (!toevoegAct)
+            {
+                layoutInstel();
+                toevoegAct = true;
+            }
+            else
+            {
+                if (!CheckOpFouten())
+                {
+                    Film nieuweFilm = new Film();
+                    nieuweFilm.BandNr = Convert.ToInt32(bandNrTextBox.Text);
+                    nieuweFilm.Titel = titelTextBox.Text;
+                    nieuweFilm.GenreNr = Convert.ToInt32(genreNrCbBox.SelectedValue);
+                    nieuweFilm.InVoorraad = Convert.ToInt32(inVoorraadTextBox.Text);
+                    nieuweFilm.UitVoorraad = Convert.ToInt32(uitVoorraadTextBox.Text);
+                    nieuweFilm.Prijs = Convert.ToDecimal(uitVoorraadTextBox.Text);
+                    nieuweFilm.TotaalVerhuurd = Convert.ToInt32(totaalVerhuurdTextBox.Text);
+                    filmsOb.Add(nieuweFilm);
+                }
+
+
+            }
         }
 
-        private void layoutInstel ()
+        bool CheckOpFouten()
         {
-            //lbFilms.SelectedItem = null;
+            bool foutGevonden = false;
+            foreach (var c in grid1.Children)
+            {
+                if (Validation.GetHasError((DependencyObject)c))
+                {
+                    foutGevonden = true;
+                }
+            }
+            return foutGevonden;
+        }
+
+        private void layoutInstel()
+        {
             btToevoegbevestig.Content = "Bevestigen";
             btVerwijdAnnuleer.Content = "Annuleren";
             btAllesOpslaan.IsEnabled = false;
             btVerhuur.IsEnabled = false;
+            Panel.SetZIndex(labelUitvr, 1);
+            Panel.SetZIndex(labelInvr, 1);
+            Panel.SetZIndex(btVerhuur, 0);
             lbFilms.IsEnabled = false;
             titelTextBox.IsReadOnly = false;
             genreNrCbBox.IsEnabled = true;
@@ -53,7 +104,72 @@ namespace Videotheek
             uitVoorraadTextBox.IsReadOnly = false;
             prijsTextBox.IsReadOnly = false;
             totaalVerhuurdTextBox.IsReadOnly = false;
+            lbFilms.SelectedIndex = -1;
+            VullenBoxen();
         }
-           }
+        private void VullenBoxen()
+        {
+            bandNrTextBox.Text = "0";
+            titelTextBox.Text = "";
+            genreNrCbBox.Text = "";
+            inVoorraadTextBox.Text = "0";
+            uitVoorraadTextBox.Text = "0";
+            prijsTextBox.Text = "0,00";
+            totaalVerhuurdTextBox.Text = "0";
+        }
+        void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.OldItems != null)
+            {
+                foreach (Film oudeFilm in e.OldItems)
+                {
+                    OudeFilms.Add(oudeFilm);
+                }
+            }
+            if (e.NewItems != null)
+            {
+                foreach (Film nieuweFilm in e.NewItems)
+                {
+                    NieuweFilms.Add(nieuweFilm);
+                }
+            }
+        }
 
+        private void btVerwijdAnnuleer_Click(object sender, RoutedEventArgs e)
+        {
+            if (toevoegAct)
+            {
+                layoutChange();
+                toevoegAct = false;
+            }
+            else
+            {
+                if (MessageBox.Show("Ben je zeker dat je deze film wil verwijderen", "Verwijderen", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
+                {
+                    Film oudeFilm = new Film();
+                    oudeFilm = (Film)lbFilms.SelectedItem;
+                    filmsOb.Remove(oudeFilm);
+                }
+            }
+        }
+
+        private void layoutChange()
+        {
+            btToevoegbevestig.Content = "Toevoegen";
+            btVerwijdAnnuleer.Content = "Verwijderen";
+            btAllesOpslaan.IsEnabled = true;
+            btVerhuur.IsEnabled = true;
+            Panel.SetZIndex(labelUitvr, 0);
+            Panel.SetZIndex(labelInvr, 0);
+            Panel.SetZIndex(btVerhuur, 1);
+            lbFilms.IsEnabled = true;
+            titelTextBox.IsReadOnly = true;
+            genreNrCbBox.IsEnabled = false;
+            inVoorraadTextBox.IsReadOnly = true;
+            uitVoorraadTextBox.IsReadOnly = true;
+            prijsTextBox.IsReadOnly = true;
+            totaalVerhuurdTextBox.IsReadOnly = true;
+            lbFilms.SelectedIndex = 0;
+        }
+    }
 }

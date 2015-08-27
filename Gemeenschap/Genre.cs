@@ -26,6 +26,8 @@ namespace Gemeenschap
             this.GenreName = genrenaam;
             this.GenreNr = genrenr;
         }
+    
+       
         
         
     }

@@ -10,20 +10,12 @@
         Title="Videotheek" Height="450" Width="525" Loaded="Window_Loaded">
     <Window.Resources>
         <CollectionViewSource x:Key="filmViewSource" d:DesignSource="{d:DesignInstance {x:Type Gemeenschap:Film}, CreateList=True}"/>
-        <Style x:Key="textBoxInError" TargetType="{x:Type TextBox}">
-            <Style.Triggers>
-                <Trigger Property="Validation.HasError" Value="true">
-                    <Setter Property="ToolTip"  Value="{Binding RelativeSource={x:Static RelativeSource.Self}, 
-                        Path=(Validation.Errors)[0].ErrorContent}"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
     </Window.Resources>
     <StackPanel Orientation="Horizontal">
-        <StackPanel DataContext="{StaticResource filmViewSource}"  Width="349" Margin="0,0,0,10" >
+        <StackPanel DataContext="{StaticResource filmViewSource}"  Width="321" Margin="0,0,0,10" >
             <Label FontSize="20" Width="175" Content="Videotheek - films"/>
             <ListBox x:Name="lbFilms" Height="125" ItemsSource="{Binding}" DisplayMemberPath="Titel"/>
-            <Grid  x:Name="grid1" HorizontalAlignment="Left" Margin="54,0,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.326,0.485" Width="291">
+            <Grid  x:Name="grid1" HorizontalAlignment="Left" Margin="54,0,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.326,0.485" Width="267">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
@@ -38,34 +30,86 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Label Content="Band Nr:" Grid.Column="0" HorizontalAlignment="Left" Margin="0,4,0,2" Grid.Row="0" VerticalAlignment="Center" />
-                <TextBox x:Name="bandNrTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="24" Margin="3,4,-56,4" Grid.Row="0" Text="{Binding BandNr, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="180" IsReadOnly="True"/>
+                <TextBox x:Name="bandNrTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3,4,-56,4" Grid.Row="0" Text="{Binding BandNr, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="180" IsReadOnly="True"/>
                 <Label Content="Genre Nr:" Grid.Column="0" HorizontalAlignment="Left" Margin="0,1,0,2" Grid.Row="3" VerticalAlignment="Center"/>
-                <ComboBox x:Name="genreNrCbBox" Grid.Column="1" HorizontalAlignment="Left" Height="24" Margin="3.2,1.2,-48.8,3.6" Grid.Row="3" Text="{Binding GenreNr, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="180" SelectedValue="{Binding GenreNr}" IsEnabled="False"/>
+                <ComboBox x:Name="genreNrCbBox" Grid.Column="1" HorizontalAlignment="Left" Height="24" Margin="3.2,1.2,-48.8,3.6" Grid.Row="3" VerticalAlignment="Center" Width="180" IsEnabled="False" >
+                    <ComboBox.Text>
+                        <Binding Path="GenreNr" Mode="OneWay" NotifyOnValidationError="True" ValidatesOnExceptions="True" UpdateSourceTrigger="LostFocus"  >
+                            <Binding.ValidationRules>
+                                <local:GenreSelectRule/>
+                            </Binding.ValidationRules>                           
+                        </Binding>                    
+                    </ComboBox.Text>
+                    <ComboBox.SelectedValue>
+                        <Binding Path="GenreNr">                           
+                        </Binding>
+                    </ComboBox.SelectedValue>
+                </ComboBox>
                 <Label Content="In Voorraad:" Grid.Column="0" HorizontalAlignment="Left" Margin="0,1,0,2" Grid.Row="5" VerticalAlignment="Center"/>
-                <TextBox x:Name="inVoorraadTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3,3,-53,3" Grid.Row="5" Text="{Binding InVoorraad, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="180" IsReadOnly="True"/>
+                <TextBox x:Name="inVoorraadTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3,3,-53,3" Grid.Row="5" VerticalAlignment="Center" Width="180" IsReadOnly="True">
+                    <TextBox.Text>
+                        <Binding Path="InVoorraad" Mode="TwoWay" NotifyOnValidationError="True" ValidatesOnExceptions="True" UpdateSourceTrigger="LostFocus" >
+                            <Binding.ValidationRules>
+                                <local:IntGetalIngaveRule/>
+                                <local:GetalGroterDanNulRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
                 <Label Content="Prijs:" Grid.Column="0" HorizontalAlignment="Left" Margin="0,34,0,-28" Grid.Row="6" VerticalAlignment="Center" RenderTransformOrigin="1.124,6.121"/>
-                <TextBox x:Name="prijsTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="22" Margin="3,33,-51,-23" Grid.Row="6" Text="{Binding Prijs, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}, Mode=TwoWay, NotifyOnValidationError=true, StringFormat=c, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="180" IsReadOnly="True"/>
+                <TextBox x:Name="prijsTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3,33,-51,-23" Grid.Row="6" VerticalAlignment="Center" Width="180" IsReadOnly="True">
+                    <TextBox.Text>
+                        <Binding Path="Prijs" Mode="TwoWay" NotifyOnValidationError="True" ValidatesOnExceptions="True" UpdateSourceTrigger="LostFocus"  ConverterCulture="{x:Static glob:CultureInfo.CurrentCulture}" StringFormat="c">
+                            <Binding.ValidationRules>
+                                <local:DecimalIngaveRule ValidationStep="CommittedValue"/>
+                                <local:GetalGroterDanNulRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
                 <Label Content="Titel:" Grid.Column="0" HorizontalAlignment="Left" Margin="0,2,0,1" Grid.Row="1" VerticalAlignment="Center"/>
-                <TextBox x:Name="titelTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3,3,-55,3" Text="{Binding Titel, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="180" RenderTransformOrigin="0.073,0.726" Grid.Row="1" IsReadOnly="True"/>
-                <Label Content="Totaal Verhuurd:" Grid.Column="0" HorizontalAlignment="Left" Margin="-14,60,0,-54" Grid.Row="6" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
-                <TextBox x:Name="totaalVerhuurdTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3,63,-50,-54" Grid.Row="6" Style="{StaticResource textBoxInError}" VerticalAlignment="Center" Width="180" IsReadOnly="True">
+                <TextBox x:Name="titelTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3,3,-55,3" VerticalAlignment="Center" Width="180" RenderTransformOrigin="0.073,0.726" Grid.Row="1" IsReadOnly="True">
+                    <TextBox.Text>
+                        <Binding Path="Titel" Mode="TwoWay" NotifyOnValidationError="True" ValidatesOnExceptions="True" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <local:StringIngaveRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+                <Label Content="Totaal Verhuurd:" Grid.Column="0" HorizontalAlignment="Left" Margin="-14,61,0,-54" Grid.Row="6" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
+                <TextBox x:Name="totaalVerhuurdTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3,63,-50,-54" Grid.Row="6" VerticalAlignment="Center" Width="180" IsReadOnly="True">
                     <TextBox.Text>
                         <Binding Path="TotaalVerhuurd" Mode="TwoWay" NotifyOnValidationError="True" ValidatesOnExceptions="True" UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>
-                                <local:GetalIngaveOk/>
+                                <local:IntGetalIngaveRule/>
                             </Binding.ValidationRules>
                         </Binding>
                     </TextBox.Text>
                 </TextBox>
                 <Label Content="Uit Voorraad:" Grid.Column="0" HorizontalAlignment="Left" Margin="0,1,0,5" Grid.Row="6" VerticalAlignment="Center"/>
-                <TextBox x:Name="uitVoorraadTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="22" Margin="3,5,-52,5" Grid.Row="6" Text="{Binding UitVoorraad, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="180" IsReadOnly="True"/>
+                <TextBox x:Name="uitVoorraadTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="22" Margin="3,5,-52,5" Grid.Row="6" VerticalAlignment="Center" Width="180" IsReadOnly="True">
+                    <TextBox.Text>
+                        <Binding Path="UitVoorraad" Mode="TwoWay" NotifyOnValidationError="True" ValidatesOnExceptions="True" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <local:IntGetalIngaveRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
             </Grid>
         </StackPanel>
-        <StackPanel Width="165" Margin="0,0,0,10">
-            <Button x:Name="btToevoegbevestig" Width="100" Height="40" Margin="0,30" Content="Toevoegen" Click="btToevoegbevestig_Click"/>
-            <Button x:Name="btVerwijdAnnuleer" Width="100" Height="40" Margin="0,-20" Content="Verwijderen"/>
-            <Button x:Name="btAllesOpslaan" Width="100" Height="40" Margin="0,40" Content="Alles opslaan"/>
-            <Button x:Name="btVerhuur" Width="100" Height="40" Margin="0,40" Content="Verhuur"/>
-        </StackPanel>
+        <Grid Width="195" Margin="0,0,0,10">
+            <Button x:Name="btToevoegbevestig" Width="100" Height="40" Margin="0,-300,0,0" Content="Toevoegen" Click="btToevoegbevestig_Click"/>
+            <Button x:Name="btVerwijdAnnuleer" Width="100" Height="40" Margin="0,-200,0,0" Content="Verwijderen" Click="btVerwijdAnnuleer_Click"/>
+            <Button x:Name="btAllesOpslaan" Width="100" Height="40" Margin="0,-75,0,0" Content="Alles opslaan"/>
+            <Button x:Name="btVerhuur" Width="100" Height="40" Margin="0,150,0,0" Content="Verhuur" Panel.ZIndex="1" />
+            <Label Width="150" Height="23" FontSize="10"  Margin="0,300,40,0"  Content="{Binding (Validation.Errors)[0].ErrorContent, ElementName=totaalVerhuurdTextBox}"/>
+            <Label Width="150" Height="23" FontSize="10"  Margin="2,250,40,0" Content="{Binding ElementName=prijsTextBox, Path=(Validation.Errors)[0].ErrorContent}"></Label>
+            <Label Name="labelUitvr" Width="150" Height="23" FontSize="10"  Margin="0,190,40,0"  Content="{Binding ElementName=uitVoorraadTextBox, Path=(Validation.Errors)[0].ErrorContent}" Panel.ZIndex="0"></Label>
+            <Label Name="labelInvr" Width="150" Height="23" FontSize="10"  Margin="0,125,40,0"  Content="{Binding ElementName=inVoorraadTextBox, Path=(Validation.Errors)[0].ErrorContent}" Panel.ZIndex="0"></Label>
+            <Label Width="150" Height="23" FontSize="10" Margin="0,70,40,0" Content="{Binding ElementName=genreNrCbBox, Path=(Validation.Errors)[0].ErrorContent }" Panel.ZIndex="0"></Label>
+            <Label Width="150" Height="23" FontSize="10" Margin="0,10,40,0" Content="{Binding ElementName=titelTextBox, Path=(Validation.Errors)[0].ErrorContent}" Panel.ZIndex="0"></Label>
+        </Grid>
     </StackPanel>
 </Window>

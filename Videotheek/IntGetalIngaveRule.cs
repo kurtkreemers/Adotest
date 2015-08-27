@@ -8,10 +8,10 @@ using System.Windows.Controls;
 
 namespace Videotheek
 {
-    public class GetalIngaveOk : ValidationRule
+    public class IntGetalIngaveRule : ValidationRule
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
-      {
+        {
             try
             {
                 int result;
@@ -21,7 +21,7 @@ namespace Videotheek
                     return new ValidationResult(false, "Enkel getallen ingeven");
             }
             catch (Exception ex)
-            {               
+            {
                 return new ValidationResult(false, ex.Message);
             }
             return new ValidationResult(true, null);
